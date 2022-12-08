@@ -1,3 +1,4 @@
+###
 POST http://127.0.0.1:8000/owners/
 Content-Type: application/json
 
@@ -5,3 +6,18 @@ Content-Type: application/json
     "first_name": "Theodor",
     "last_name": "Voland"
 }
+
+###
+
+POST http://127.0.0.1:8000/cats/
+Content-Type: application/json
+
+{
+    "name": "Вася",
+    "color": "Полостая",
+    "birth_year": 2010,
+    "owner": 1
+}
+
+###
+GET http://127.0.0.1:8000/cats/

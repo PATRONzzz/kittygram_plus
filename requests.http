@@ -1,0 +1,7 @@
+POST http://127.0.0.1:8000/owners/
+Content-Type: application/json
+
+{
+    "first_name": "Theodor",
+    "last_name": "Voland"
+}

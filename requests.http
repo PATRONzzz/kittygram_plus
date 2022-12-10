@@ -6,8 +6,8 @@ POST http://127.0.0.1:8000/owners/
 Content-Type: application/json
 
 {
-    "first_name": "Theodor",
-    "last_name": "Voland"
+    "first_name": "Граф",
+    "last_name": "Дракула"
 }
 
 ###
@@ -15,11 +15,11 @@ POST http://127.0.0.1:8000/cats/
 Content-Type: application/json
 
 {
-    "name": "Барсик",
+    "name": "Зомби Снежок",
     "color": "White",
-    "birth_year": 2017,
+    "birth_year": 1901,
     "owner": 1,
-    "achievements": [
+    "achievement_name": [
         {"name": "поймал мышку"},
         {"name": "разбил вазу"}
     ]
@@ -32,10 +32,14 @@ Content-Type: application/json
 
 {
     "name": "Бездельник",
-    "color": "Прозрачный синий",
+    "color": "Whites",
     "birth_year": 2017,
     "owner": 1
 } 
 
 ###
-GET http://127.0.0.1:8000/cats/8/
+GET http://127.0.0.1:8000/cats/
+
+
+###
+GET http://127.0.0.1:8000/cats/recent-white-cats/

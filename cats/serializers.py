@@ -1,15 +1,41 @@
+import datetime as dt
+
+import webcolors
 from rest_framework import serializers
 
-from .models import Achievement, AchievementCat, Cat, Owner
+from .models import CHOICES, Achievement, AchievementCat, Cat, Owner
+
+
+class Hex2NameColor(serializers.Field):
+    # При чтении данных ничего не меняем - просто возвращаем как
+    # есть
+    def to_representation(self, value):
+        return value
+    # При записи код цвета конвертируется в его название
+
+    def to_internal_value(self, data):
+        # Доверяй, но проверяй
+        try:
+            # Если имя цвета существует, то конвертируем код
+            # в название
+            data = webcolors.hex_to_name(data)
+        except ValueError:
+            # Иначе возвращаем ошибку
+            raise serializers.ValidationError(
+                'Для этого цвета нет имени'
+            )
+        # Возвращаем данные в новом формате
+        return data
 
 
 class AchievementSerializer(serializers.ModelSerializer):
+    achievement_name = serializers.CharField(source='name')
 
     class Meta:
         model = Achievement
         fields = (
             'id',
-            'name',
+            'achievement_name',
         )
 
 
@@ -22,6 +48,8 @@ class CatSerializer(serializers.ModelSerializer):
         many=True,
         required=False,
     )
+    age = serializers.SerializerMethodField()
+    color = serializers.ChoiceField(choices=CHOICES)
 
     class Meta:
         model = Cat
@@ -32,6 +60,7 @@ class CatSerializer(serializers.ModelSerializer):
             'birth_year',
             'owner',
             'achievements',
+            'age',
         )
 
     def create(self, validated_data: dict):
@@ -47,17 +76,21 @@ class CatSerializer(serializers.ModelSerializer):
 
         # для каждого достижения
         for achievment in achievements:
-            # создание новой записи или полчение существующего экземляра из базы данных
+            # создание новой записи или полчение существующего экземляра из
+            # базы данных
             current_achievment, status = Achievement.objects.get_or_create(
                 **achievment)
-            # Ссылка на каждое достижение во всппомогательную таблицу с указанием
-            # к каком котику она относится
+            # Ссылка на каждое достижение во всппомогательную таблицу с
+            # указанием к каком котику она относится
             AchievementCat.objects.create(
                 achievement=current_achievment,
                 cat=cat
             )
 
         return cat
+
+    def get_age(salf, obj):
+        return dt.datetime.now().year - obj.birth_year
 
 
 class OwnerSerializer(serializers.ModelSerializer):
